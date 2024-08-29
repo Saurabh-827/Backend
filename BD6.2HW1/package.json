@@ -1,0 +1,15 @@
+{
+  "name": "bd6.2hw1",
+  "version": "1.0.0",
+  "description": "Mock Functions Practice",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "saurabh",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "jest": "^29.7.0"
+  }
+}

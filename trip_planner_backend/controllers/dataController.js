@@ -22,8 +22,34 @@ const createItinerary = async (req, res) => {
 				});
 			}
 		}
+
+		if (hotels && hotels.length > 0) {
+			for (const hotel of hotels) {
+				const savedHotel = await hotelModel.create(hotel);
+				await itineraryItemModel.create({
+					itineraryId: newItinerary.id,
+					itemId: savedHotel.id,
+					type: "hotel",
+				});
+			}
+		}
+
+		if (sites && sites.length > 0) {
+			for (const site of sites) {
+				const savedSites = await siteModel.create(site);
+				await itineraryItemModel.create({
+					itineraryId: newItinerary.id,
+					itemId: savedSites.id,
+					type: "site",
+				});
+			}
+		}
+
+		res
+			.status(201)
+			.json({ message: "Itinerary Created", itinerary: newItinerary });
 	} catch (error) {
-		console.log(error);
+		console.log({ error: " Error creating itinerary" });
 	}
 	return createItinerary;
 };

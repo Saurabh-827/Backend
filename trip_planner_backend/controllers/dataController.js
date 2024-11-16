@@ -11,10 +11,9 @@ const createItinerary = async (req, res) => {
 		const { flights, hotels, sites, name } = req.body;
 		const newItinerary = await itineraryModel.create({ name });
 
-		// Likely a keyword related to air travel or flight booking.
 		if (flights && flights.length > 0) {
 			for (const flight of flights) {
-				const savedFlight = await create.flightModel(flight);
+				const savedFlight = await flightModel.create(flight);
 				await itineraryItemModel.create({
 					itineraryId: newItinerary.id,
 					itemId: savedFlight.id,
@@ -36,10 +35,10 @@ const createItinerary = async (req, res) => {
 
 		if (sites && sites.length > 0) {
 			for (const site of sites) {
-				const savedSites = await siteModel.create(site);
+				const savedSite = await siteModel.create(site);
 				await itineraryItemModel.create({
 					itineraryId: newItinerary.id,
-					itemId: savedSites.id,
+					itemId: savedSite.id,
 					type: "site",
 				});
 			}
@@ -49,7 +48,45 @@ const createItinerary = async (req, res) => {
 			.status(201)
 			.json({ message: "Itinerary Created", itinerary: newItinerary });
 	} catch (error) {
-		console.log({ error: " Error creating itinerary" });
+		console.error({ error: "Error creating itinerary", details: error });
+		res.status(500).json({ error: "Internal Server Error" });
 	}
-	return createItinerary;
 };
+
+const getItinerary = async (req, res) => {
+	try {
+		const itinerary = await itineraryModel.findByPk(req.params.id);
+
+		if (!itinerary) {
+			return res.status(404).json({ error: "Itinerary not found" });
+		}
+
+		const items = await itineraryItemModel.findAll({
+			where: { itineraryId: itinerary.id },
+		});
+
+		const flights = [];
+		const hotels = [];
+		const sites = [];
+
+		for (const item of items) {
+			if (item.type === "flight") {
+				const flightItem = await flightModel.findByPk(item.itemId);
+				if (flightItem) flights.push(flightItem);
+			} else if (item.type === "hotel") {
+				const hotelItem = await hotelModel.findByPk(item.itemId);
+				if (hotelItem) hotels.push(hotelItem);
+			} else if (item.type === "site") {
+				const siteItem = await siteModel.findByPk(item.itemId);
+				if (siteItem) sites.push(siteItem);
+			}
+		}
+
+		res.json({ itinerary, flights, hotels, sites });
+	} catch (error) {
+		console.error({ error: "Failed to retrieve itinerary", details: error });
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+module.exports = { createItinerary, getItinerary };

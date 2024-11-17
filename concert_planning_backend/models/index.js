@@ -15,9 +15,10 @@ let sequelize = new Sequelize(
 	config.password,
 	{
 		host: config.host,
-		port: config.port,
 		dialect: "postgres",
-	}
+		port: config.port,
+	},
+	config
 );
 
 fs.readdirSync(__dirname)

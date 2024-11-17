@@ -1,10 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
 	const itineraryItem = sequelize.define(
-		"itinearyItem",
+		"itineraryItem",
 		{
-			itineraryId: DataTypes.INTEGER,
-			allowNull: false,
-			reference: { model: "itinerary", key: "id" },
+			itineraryId: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: { model: "itinerary", key: "id" },
+			},
 			itemId: {
 				type: DataTypes.INTEGER,
 			},

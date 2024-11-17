@@ -4,7 +4,7 @@ const {
 	itinerary: itineraryModel,
 	itineraryItem: itineraryItemModel,
 	site: siteModel,
-} = require("../models"); //renamed this just for clarity
+} = require("../models");
 
 const createItinerary = async (req, res) => {
 	try {

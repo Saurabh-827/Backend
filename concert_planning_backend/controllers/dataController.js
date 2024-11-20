@@ -94,5 +94,6 @@ const getTour = async (req, res) => {
 		res.status(500).json({ error: "Internal server error." });
 	}
 };
-
+// used to delete all the tables from the supabase and then undo all migrations then again do migrate
+//this solves my issue to get data from tour/1 for concerts, merchandisStalls and afterParties
 module.exports = { createTour, getTour };

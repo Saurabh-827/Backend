@@ -1,5 +1,5 @@
 const axios = require("axios");
-
+//needed to load dotenv configuration?
 const axiosInstance = axios.create({
 	baseURL: process.env.MICROSERVICE_BASE_URL,
 	headers: {

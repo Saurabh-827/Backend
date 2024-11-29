@@ -122,7 +122,27 @@ let postData = [
 	},
 ];
 
-//API(routes) for the seeding
+//functions
+
+async function fetchAllTracks() {
+	let tracks = await track.findAll();
+	return { tracks };
+}
+
+async function fetchTrackById(id) {
+	let trackData = await track.findOne({ where: { id } });
+	return { track: trackData };
+}
+async function fetchTracksByArtist(artist) {
+	let tracks = await track.findAll({ where: { artist } });
+
+	return { track: tracks };
+}
+async function sortTrackByReleaseYear(order) {
+	let sortedTracks = await track.findAll({ order: [["release_year", order]] });
+	return { tracks: sortedTracks };
+}
+//API(routes) for the tracks
 app.get("/seed_track_db", async (req, res) => {
 	try {
 		await sequelize.sync({ force: true });
@@ -135,6 +155,62 @@ app.get("/seed_track_db", async (req, res) => {
 	}
 });
 
+app.get("/tracks", async (req, res) => {
+	try {
+		let response = await fetchAllTracks();
+
+		if (response.tracks.length === 0) {
+			return res.status(404).json({ message: "No tracks found." });
+		}
+		return res.status(200).json(response);
+	} catch (error) {
+		res.status(500).json({
+			message: "Error in the getting tracks data",
+			error: error.message,
+		});
+	}
+});
+
+app.get("/tracks/details/:id", async (req, res) => {
+	try {
+		let result = await fetchTrackById(parseInt(req.params.id));
+		if (result.track === null) {
+			return res.status(404).json("No id's track is found.");
+		}
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(500).json({
+			message: "Error in getting track details",
+			error: error.message,
+		});
+	}
+});
+
+app.get("/tracks/artist/:artist", async (req, res) => {
+	try {
+		let result = await fetchTracksByArtist(req.params.artist);
+		if (result.track.length === 0) {
+			return res.status(404).json("Track is not found");
+		}
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(500).json({ message: "error in track fetching through artist" });
+	}
+});
+
+app.get("/tracks/sort/release_year", async (req, res) => {
+	try {
+		let result = await sortTrackByReleaseYear(req.query.order);
+
+		if (result.tracks.length === 0) {
+			return res.status(404).json({ message: "No tracks found" });
+		}
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+});
+//API(routes) for the post
 app.get("/seed_post_db", async (req, res) => {
 	try {
 		await sequelize.sync({ force: true });

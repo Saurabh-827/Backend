@@ -1,20 +1,19 @@
 const {
 	concert: concertModel,
-	afterParties: afterPartiesModel,
-	merchandiseStalls: merchandiseStallsModel,
+	afterParty: afterPartyModel,
+	merchandiseStall: merchandiseStallModel,
 	tour: tourModel,
 	tourItem: tourItemModel,
 } = require("../models");
 
 const createTour = async (req, res) => {
 	try {
-		const { afterParties, concerts, merchandiseStalls, name } = req.body;
+		const { concerts, afterParties, merchandiseStalls, name } = req.body;
 		const newTour = await tourModel.create({ name });
 
 		if (concerts && concerts.length > 0) {
 			for (const concert of concerts) {
 				const savedConcert = await concertModel.create(concert);
-
 				await tourItemModel.create({
 					tourId: newTour.id,
 					itemId: savedConcert.id,
@@ -25,46 +24,43 @@ const createTour = async (req, res) => {
 
 		if (afterParties && afterParties.length > 0) {
 			for (const afterParty of afterParties) {
-				const savedAfterParties = await afterPartiesModel.create(afterParty);
-
+				const savedAfterParty = await afterPartyModel.create(afterParty);
 				await tourItemModel.create({
 					tourId: newTour.id,
-					itemId: savedAfterParties.id,
-					type: "afterParties",
+					itemId: savedAfterParty.id,
+					type: "afterParty",
 				});
 			}
 		}
 
 		if (merchandiseStalls && merchandiseStalls.length > 0) {
 			for (const merchandiseStall of merchandiseStalls) {
-				const savedMerchandiseStall = await merchandiseStallsModel.create(
+				const savedMerchandiseStall = await merchandiseStallModel.create(
 					merchandiseStall
 				);
-
 				await tourItemModel.create({
 					tourId: newTour.id,
 					itemId: savedMerchandiseStall.id,
-					type: "merchandiseStalls",
+					type: "merchandiseStall",
 				});
 			}
 		}
-		res.status(201).json({ message: "Tour created.", tour: newTour });
-		// console.log("Creating tour:", newTour);
-		// console.log("Concert data:", concerts);
-		// console.log("AfterParties data:", afterParties);
-		// console.log("MerchandiseStalls data:", merchandiseStalls);
+
+		res.status(201).json({ message: "tour Created", tour: newTour });
 	} catch (error) {
-		console.error({ error: "Error during creation of tour", details: error });
-		res.status(500).json({ error: "Internal server error." });
+		console.error("Error details:", error);
+		res.status(500).json({ error: "Failed to create tour" });
 	}
 };
 
 const getTour = async (req, res) => {
 	try {
 		const tour = await tourModel.findByPk(req.params.id);
+
 		if (!tour) {
-			return res.status(404).json({ error: "Tour not found" });
+			return res.status(404).json({ error: "tour not found." });
 		}
+
 		const items = await tourItemModel.findAll({
 			where: { tourId: tour.id },
 		});
@@ -75,25 +71,29 @@ const getTour = async (req, res) => {
 
 		for (const item of items) {
 			if (item.type === "concert") {
-				const concertItem = await concertModel.findByPk(item.itemId);
-				if (concertItem) concerts.push(concertItem);
-			} else if (item.type === "afterParties") {
-				const afterPartiesItem = await afterPartiesModel.findByPk(item.itemId);
-				if (afterPartiesItem) afterParties.push(afterPartiesItem);
-			} else if (item.type === "merchandiseStalls") {
-				const merchandiseStallsItem = await merchandiseStallsModel.findByPk(
+				const concert = await concertModel.findByPk(item.itemId);
+				if (concert) concerts.push(concert);
+			} else if (item.type === "afterParty") {
+				const afterParty = await afterPartyModel.findByPk(item.itemId);
+				if (afterParty) afterParties.push(afterParty);
+			} else {
+				const merchandiseStall = await merchandiseStallModel.findByPk(
 					item.itemId
 				);
-				if (merchandiseStallsItem)
-					merchandiseStalls.push(merchandiseStallsItem);
+				if (merchandiseStall) merchandiseStalls.push(merchandiseStall);
 			}
 		}
-		res.json({ tour, concerts, afterParties, merchandiseStalls });
+
+		res.json({
+			tour,
+			concerts,
+			afterParties,
+			merchandiseStalls,
+		});
 	} catch (error) {
-		console.error({ error: "Error in retrieve tour", details: error });
-		res.status(500).json({ error: "Internal server error." });
+		console.error(error);
+		res.status(500).json({ error: "Failed to retrieved tour" });
 	}
 };
-// used to delete all the tables from the supabase and then undo all migrations then again do migrate
-//this solves my issue to get data from tour/1 for concerts, merchandisStalls and afterParties
+
 module.exports = { createTour, getTour };

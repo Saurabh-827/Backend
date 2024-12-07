@@ -5,13 +5,18 @@ module.exports = (sequelize, DataTypes) => {
 			tourId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
-				references: { model: "tour", key: "id" },
+				references: {
+					model: "tour",
+					key: "id",
+				},
 			},
 			itemId: {
 				type: DataTypes.INTEGER,
+				allowNull: false,
 			},
 			type: {
 				type: DataTypes.STRING,
+				allowNull: false,
 			},
 		},
 		{
@@ -24,5 +29,6 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "tourId",
 		});
 	};
+
 	return tourItem;
 };

@@ -1,14 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
-	const merchandiseStalls = sequelize.define(
-		"merchandiseStalls",
+	const merchandiseStall = sequelize.define(
+		"merchandiseStall",
 		{
 			stallName: DataTypes.STRING,
 			itemAvailable: DataTypes.STRING,
 			price: DataTypes.FLOAT,
 		},
-		{
-			timestamps: true,
-		}
+		{ timestamps: true }
 	);
-	return merchandiseStalls;
+
+	return merchandiseStall;
 };

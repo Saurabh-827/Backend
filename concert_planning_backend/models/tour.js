@@ -4,9 +4,7 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			name: DataTypes.STRING,
 		},
-		{
-			timestamps: true,
-		}
+		{ timestamps: true }
 	);
 
 	tour.associate = (models) => {
@@ -14,5 +12,6 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: "tourId",
 		});
 	};
+
 	return tour;
 };

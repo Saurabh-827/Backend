@@ -1,15 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
-	const afterParties = sequelize.define(
-		"afterParties",
+	const afterParty = sequelize.define(
+		"afterParty",
 		{
 			location: DataTypes.STRING,
 			city: DataTypes.STRING,
 			date: DataTypes.DATE,
 			ticketPrice: DataTypes.FLOAT,
 		},
-		{
-			timestamps: true,
-		}
+		{ timestamps: true }
 	);
-	return afterParties;
+
+	return afterParty;
 };

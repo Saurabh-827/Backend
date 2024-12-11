@@ -1,61 +1,46 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const sequelize = require("./lib/sequelize");
+const userModel = require("./models/user");
 const app = express();
-const port = 3000;
 
 app.use(cors());
 app.use(express.json());
 
-const users = [
-	{
-		id: 1,
-		username: "octocat",
-		name: "The Octocat",
-		repoCount: 8,
-		location: "San Francisco",
-	},
-	{
-		id: 2,
-		username: "torvalds",
-		name: "Linus Torvalds",
-		repoCount: 25,
-		location: "Portland",
-	},
-	{
-		id: 3,
-		username: "gaearon",
-		name: "Dan Abramov",
-		repoCount: 50,
-		location: "London",
-	},
-	{
-		id: 4,
-		username: "addyosmani",
-		name: "Addy Osmani",
-		repoCount: 42,
-		location: "Mountain View",
-	},
-	{
-		id: 5,
-		username: "tj",
-		name: "TJ Holowaychuk",
-		repoCount: 150,
-		location: "Victoria",
-	},
-];
+//sequelize.sync(): Synchronizes models with the database, creating tables if they do not exist(if u sequelize.define() any model).
+sequelize
+	.sync()
+	.then(() => {
+		console.log("Database connected succesfully.");
+	})
+	.catch((error) => {
+		console.error("Unable to connect to databas.", error);
+	});
 
-app.get("/users", (req, res) => {
-	res.json({ users });
+app.get("/users", async (req, res) => {
+	try {
+		const users = await userModel.findAll();
+		res.json({ users });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Failed to fetch users." });
+	}
 });
 
-app.get("/users/:id", (req, res) => {
+app.get("/users/:id", async (req, res) => {
 	const userId = parseInt(req.params.id);
-	const user = users.find((u) => u.id === userId);
+	try {
+		const user = await userModel.findByPk(userId);
 
-	if (user) {
-		res.json({ user });
-	} else {
-		res.status(404).json({ message: "User not found" });
+		if (user) {
+			res.json({ user });
+		} else {
+			res.status(404).json({ message: "User not found" });
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Failed to fetch user by id." });
 	}
 });
 
@@ -176,6 +161,7 @@ app.get("/players/:id", (req, res) => {
 	}
 });
 
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
 	console.log(`Server is running on http://localhost:${port}`);
 });

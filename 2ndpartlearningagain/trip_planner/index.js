@@ -12,6 +12,7 @@ axiosInstance
 		console.log("Error while fetching axiosInstance.", error);
 	});
 
+//writing a function and makeing a GET request to the /flights/search endpoint using an Axios instance
 const getFlights = async (origin, destination) => {
 	try {
 		const response = await axiosInstance.get("/flights/search", {
@@ -26,6 +27,7 @@ const getFlights = async (origin, destination) => {
 	}
 };
 
+//calling the getFlights function
 getFlights("bengaluru", "dehradun")
 	.then((flights) => {
 		console.log("Flights are ", flights);

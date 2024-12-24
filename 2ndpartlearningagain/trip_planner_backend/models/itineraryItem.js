@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 	);
 
 	itineraryItem.associate = (models) => {
-		itineraryItem.belongsTo(models.itinerary, { ForeignKey: "itineraryId" });
+		itineraryItem.belongsTo(models.itinerary, { foreignKey: "itineraryId" });
 	};
 
 	return itineraryItem;

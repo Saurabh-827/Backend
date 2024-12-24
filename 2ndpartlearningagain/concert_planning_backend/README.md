@@ -161,4 +161,10 @@ Implement error handling and rate limiting for better API security and stability
 
 ---
 
+### 🧪 Step 10: Writing Tests for the APIs ✅
+
+Testing ensures that your APIs function as expected. Use `jest` for testing. 🧪
+
+---
+
 ✨ **Let’s make your concert planning extraordinary!** 🎤🎶

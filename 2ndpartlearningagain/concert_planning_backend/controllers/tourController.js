@@ -1,27 +1,19 @@
+const axiosInstance = require("../lib/axios.lib");
 const {
 	validateAfterPartyQueryParams,
 	validateConcertsByQueryParams,
 	validateMerchandiseStallsByQueryParams,
 } = require("../validations/index");
-const axios = require("axios");
 require("dotenv").config();
-
-const axiosInstance = axios.create({
-	baseURL: process.env.MICROSERVICE_BASE_URL,
-	headers: {
-		"Content-Type": "application/json",
-		CLIENT_KEY: process.env.CLIENT_KEY,
-		CLIENT_SECRET: process.env.CLIENT_SECRET,
-	},
-});
 
 const getConcertsByArtistAndCity = async (req, res) => {
 	const errors = validateConcertsByQueryParams(req.query);
 	if (errors.length > 0) return res.status(400).json({ errors });
 	try {
 		const { artist, city } = req.query;
+		const encodedCity = encodeURIComponent(city); // because test needed some gap input of %20
 		const response = await axiosInstance.get(
-			`/concerts/search?artist=${artist}&city=${city}`
+			`/concerts/search?artist=${artist}&city=${encodedCity}`
 		);
 		res.json(response.data);
 	} catch (error) {
@@ -36,8 +28,9 @@ const getMerchandiseStallsByStallName = async (req, res) => {
 	if (errors.length > 0) return res.status(400).json({ errors });
 	try {
 		const stallName = req.query.stallName;
+		const encodedStallName = encodeURIComponent(stallName); // because test needed some gap input of %20
 		const response = await axiosInstance.get(
-			`/merchandiseStalls/search?stallName=${stallName}`
+			`/merchandiseStalls/search?stallName=${encodedStallName}`
 		);
 		res.json(response.data);
 	} catch (error) {

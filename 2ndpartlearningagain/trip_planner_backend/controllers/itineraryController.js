@@ -1,20 +1,11 @@
 //fetch data for the items (axios needed)
 require("dotenv").config();
+const axiosInstance = require("../lib/axios.lib");
 const {
 	validateFlightQueryParams,
 	validateHotelsQueryParams,
 	validateSitesQueryParams,
 } = require("../validations/index");
-const axios = require("axios");
-
-const axiosInstance = axios.create({
-	baseURL: process.env.MICROSERVICE_BASE_URL,
-	headers: {
-		"Content-Type": "application/json",
-		CLIENT_KEY: process.env.CLIENT_KEY,
-		CLIENT_SECRET: process.env.CLIENT_SECRET,
-	},
-});
 
 //input validations with the help of functions
 

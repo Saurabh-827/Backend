@@ -151,4 +151,10 @@ app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 ---
 
+### 🚦 Step 8: Add Error Handling & Rate Limiting 🔐
+
+Implement error handling and rate limiting for better API security and stability. ⚡
+
+---
+
 ✨ **Let’s make your concert planning extraordinary!** 🎤🎶

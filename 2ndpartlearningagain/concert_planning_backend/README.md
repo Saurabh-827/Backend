@@ -157,4 +157,8 @@ Implement error handling and rate limiting for better API security and stability
 
 ---
 
+### 🛡️ Step 9: Add Input Validations & Create a Validations Folder 🧪
+
+---
+
 ✨ **Let’s make your concert planning extraordinary!** 🎤🎶

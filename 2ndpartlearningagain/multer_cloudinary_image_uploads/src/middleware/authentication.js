@@ -5,7 +5,7 @@ const authenticateJWT = (req, res, next) => {
 	if (!token) {
 		return res
 			.status(403)
-			.json({ message: "No token provides, authorization denied." });
+			.json({ message: "No token provided, authorization denied." });
 	}
 
 	try {
@@ -15,8 +15,8 @@ const authenticateJWT = (req, res, next) => {
 	} catch (error) {
 		return res
 			.status(401)
-			.json({ mesaage: "Invalid token, authorization is denied." });
+			.json({ message: "Invalid token, authorization is denied." });
 	}
 };
 
-module.exports = { authenticateJWT };
+module.exports = authenticateJWT;

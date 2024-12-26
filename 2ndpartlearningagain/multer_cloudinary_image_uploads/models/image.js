@@ -1,4 +1,8 @@
-module.exports = (Sequelize, DataTypes) => {
+const { Model } = require("sequelize");
+
+module.exports = (sequelize, DataTypes) => {
+	class Image extends Model {}
+
 	Image.init(
 		{
 			url: DataTypes.STRING,
@@ -11,9 +15,10 @@ module.exports = (Sequelize, DataTypes) => {
 			isDeleted: DataTypes.BOOLEAN,
 		},
 		{
-			Sequelize,
+			sequelize, // Pass the sequelize instance here
 			modelName: "Image",
 		}
 	);
+
 	return Image;
 };

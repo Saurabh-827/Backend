@@ -1,4 +1,4 @@
-const { cloudinaryUpload } = require("../service/fileService.js");
+const { cloudinaryUpload } = require("../config/cloudinary.js");
 
 const fileController = async (req, res) => {
 	try {
@@ -13,7 +13,7 @@ const fileController = async (req, res) => {
 				.json({ error: { description: "No file uploaded." } });
 		}
 		const file = req.files[0];
-		const response = await cloudinaryUpload(file);
+		const response = await cloudinaryUpload(file.path);
 		res
 			.status(200)
 			.json({ message: "File uploaded successfully", uploadResult: response });
@@ -21,4 +21,5 @@ const fileController = async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 };
+
 module.exports = { fileController };

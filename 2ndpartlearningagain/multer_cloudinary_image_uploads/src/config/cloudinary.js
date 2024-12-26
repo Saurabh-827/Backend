@@ -1,5 +1,8 @@
-const { cloudinary } = require("cloudinary");
+const cloudinary = require("cloudinary").v2;
 const crypto = require("crypto");
+require("dotenv").config(); // Ensure environment variables are loaded
+
+// Configure Cloudinary
 const cloudinaryConfig = () => {
 	cloudinary.config({
 		cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -8,13 +11,12 @@ const cloudinaryConfig = () => {
 	});
 };
 
-//securing our uploads to cloudinary by using hashing("sha1") algorithm to generate a signature
-
+// Secure uploads to Cloudinary by using hashing ("sha1") algorithm to generate a signature
 const generateSignature = (paramsToSign) => {
 	const { api_secret } = cloudinary.config();
 	const sortedParams = Object.keys(paramsToSign)
 		.sort()
-		.map((key) => `${key} = ${paramsToSign[key]}`)
+		.map((key) => `${key}=${paramsToSign[key]}`)
 		.join("&");
 
 	const signature = crypto
@@ -25,6 +27,7 @@ const generateSignature = (paramsToSign) => {
 	return signature;
 };
 
+// Upload file to Cloudinary
 const uploadToCloudinary = async (filePath) => {
 	try {
 		cloudinaryConfig();

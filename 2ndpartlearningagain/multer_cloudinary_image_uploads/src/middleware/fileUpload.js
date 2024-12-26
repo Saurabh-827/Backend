@@ -31,4 +31,4 @@ const upload = multer({
 	},
 }).array("file", 1); // limiting the upload to 1 file
 
-module.exports = multer;
+module.exports = upload;

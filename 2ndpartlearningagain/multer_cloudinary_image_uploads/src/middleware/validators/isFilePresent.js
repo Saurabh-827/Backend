@@ -6,9 +6,9 @@ const isFilePresent = (req, res, next) => {
 	}
 
 	if (Array.isArray(req.files) && req.files.length === 0) {
-		res.status(400).json({ error: { description: "No file uploaded" } });
+		return res.status(400).json({ error: { description: "No file uploaded" } });
 	}
 	next();
 };
 
-module.exports = { isFilePresent };
+module.exports = isFilePresent;

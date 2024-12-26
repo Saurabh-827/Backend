@@ -4,7 +4,7 @@ const multer = require("multer");
 const { UNEXPECTED_FILE_TYPE } = require("../constants/file.js");
 const { fileController } = require("../controllers/fileController.js");
 const { imageResize } = require("../middleware/imageResize.js");
-const { isFilePresent } = require("../middleware/validators/isFilePresent.js");
+const isFilePresent = require("../middleware/validators/isFilePresent.js");
 const authenticateJWT = require("../middleware/authentication.js");
 
 // Create a new router instance
@@ -22,16 +22,17 @@ fileRouter.post(
 				if (err.code === UNEXPECTED_FILE_TYPE.code) {
 					return res.status(400).json({ error: { description: err.field } });
 				}
-			} else {
+			} else if (err) {
 				// Handle other errors
 				return res.status(500).json({ error: { description: err.message } });
 			}
+			// Proceed to the next middleware/controller
+			next();
 		});
-		// Proceed to the next middleware/controller
-		next();
 	},
-	// Use the file controller to handle the request after file upload
-	fileController,
+	isFilePresent,
 	imageResize,
-	isFilePresent
+	fileController
 );
+
+module.exports = fileRouter;

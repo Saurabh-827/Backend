@@ -13,4 +13,4 @@ const cloudinaryUpload = async (file) => {
 	}
 };
 
-module.exports = cloudinaryUpload;
+module.exports = { cloudinaryUpload };

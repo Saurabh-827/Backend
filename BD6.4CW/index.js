@@ -2,6 +2,8 @@ const express = require('express');
 let { getAllBooks, getBook, getAllReviews, getReview } = require('./books.js');
 const app = express();
 app.use(express.json());
+
+// GET /api/books: Fetch all books from the data source.
 app.get('/api/books', async (req, res) => {
     try {
         let books = await getAllBooks();
@@ -12,6 +14,7 @@ app.get('/api/books', async (req, res) => {
     }
 });
 
+// GET /api/books/:id: Fetch a single book by its ID.
 app.get('/api/books/:id', async (req, res) => {
     try {
         let book = await getBook(req.params.id);
@@ -22,6 +25,7 @@ app.get('/api/books/:id', async (req, res) => {
     }
 });
 
+// GET /api/reviews: Fetch all reviews from the data source.
 app.get('/api/reviews', async (req, res) => {
     try {
         let reviews = await getAllReviews();
@@ -32,6 +36,7 @@ app.get('/api/reviews', async (req, res) => {
     }
 });
 
+// GET /api/reviews/:id: Fetch a single review by its ID.
 app.get('/api/reviews/:id', async (req, res) => {
     try {
         let review = await getReview(req.params.id);

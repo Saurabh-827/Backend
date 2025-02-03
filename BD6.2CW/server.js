@@ -1,3 +1,4 @@
+//initialising nodejs server
 let {app} = require('./index.js');
 
 const port = 3000;

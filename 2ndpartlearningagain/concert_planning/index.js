@@ -1,6 +1,7 @@
 const axiosInstance = require("./lib/axios");
 require("dotenv").config();
 
+//creating axios instance
 axiosInstance
 	.get("/health")
 	.then((response) => {

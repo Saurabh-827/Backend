@@ -4,7 +4,14 @@ const db = require("./models/index");
 const app = express();
 app.use(express.json());
 app.use(cors());
-const { createNewUser } = require("./controllers/userController");
+const {
+	createNewUser,
+	searchImages,
+	savedPhoto,
+	addTagsByPhotoId,
+	getPhotoFromDb,
+	searchByTag,
+} = require("./controllers/userController");
 
 db.sequelize
 	.authenticate()
@@ -17,6 +24,11 @@ db.sequelize
 
 //step 1: Define a new POST endpoint which will be responsible for creating new users in the DB
 app.post("/api/users", createNewUser);
+app.get("/api/photos/search", searchImages);
+app.post("/api/photos", savedPhoto);
+app.post("/api/photos/:photoId/tags", addTagsByPhotoId);
+app.get("/api/photos/:photoId", getPhotoFromDb);
+app.get("/api/photos/tag/search", searchByTag);
 
 app.listen(3000, () => {
 	console.log(`Server is started at port 3000.`);

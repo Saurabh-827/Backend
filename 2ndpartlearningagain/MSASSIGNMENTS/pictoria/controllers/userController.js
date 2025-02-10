@@ -10,8 +10,6 @@ const {
 
 const { doesUserExist } = require("../services/userService");
 const axiosInstance = require("../lib/axios.lib");
-const { all } = require("axios");
-const { query } = require("express");
 
 //step 3: Create a controller function named createNewUser
 const createNewUser = async (req, res) => {
@@ -169,11 +167,15 @@ const getPhotoFromDb = async (req, res) => {
 	if (isNaN(photoId) || photoId <= 0) {
 		return res.status(400).json({ message: "Invalid photo ID." });
 	}
-	let gettedPhoto = await photo.findOne({ where: { id: photoId } });
-	if (!gettedPhoto) {
-		return res.status(404).json({ message: "Photo not found." });
+	try {
+		let gettedPhoto = await photo.findOne({ where: { id: photoId } });
+		if (!gettedPhoto) {
+			return res.status(404).json({ message: "Photo not found." });
+		}
+		return res.status(200).json(gettedPhoto);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal server error" });
 	}
-	return res.status(200).json(gettedPhoto);
 };
 
 const searchByTag = async (req, res) => {
@@ -195,17 +197,51 @@ const searchByTag = async (req, res) => {
 	}
 
 	//Before searching for photos, check if the provided tag exists in the database.
-	const isTagExist = await tag.findOne({ where: { name: queryTag } });
-	if (isTagExist) {
-		const photoId = isTagExist.photoId;
-		const photos = await photo.findAll({
-			where: { id: photoId },
-			include: { model: tag, attributes: ["name"] },
-			order: [["dateSaved", sort.toUpperCase()]],
+	try {
+		const isTagExist = await tag.findAll({
+			where: { name: queryTag },
+			include: { model: photo },
 		});
-		return res.status(200).json(photos);
-	} else {
-		return res.status(404).json({ message: "Tag not found." });
+		if (isTagExist.length > 0) {
+			const photoId = isTagExist.map((tag) => tag.photoId);
+			const photos = await photo.findAll({
+				where: { id: photoId },
+				include: { model: tag, attributes: ["name"] },
+				order: [["dateSaved", sort.toUpperCase()]],
+			});
+			return res.status(200).json(photos);
+		} else {
+			return res.status(404).json({ message: "Tag not found." });
+		}
+	} catch (error) {
+		return res.status(500).json({ message: "Internal server error" });
+	}
+};
+
+//1.7: Tracking and Displaying Search History
+
+const getSearchHistory = async (req, res) => {
+	const userId = req.query.userId;
+	if (!userId || isNaN(userId)) {
+		return res
+			.status(400)
+			.json({ message: "User Id is required. And it should be a number." });
+	}
+	try {
+		const searchHistoryOfUser = await searchHistory.findAll({
+			where: { userId },
+			attributes: ["query", "timestamp"],
+		});
+		if (!searchHistoryOfUser.length > 0) {
+			return res
+				.status(404)
+				.json({ message: "No search history found for the user." });
+		}
+		return res.status(200).json(searchHistoryOfUser);
+	} catch (error) {
+		return res
+			.status(500)
+			.json({ message: "Internal server error", error: error.message });
 	}
 };
 module.exports = {
@@ -215,4 +251,5 @@ module.exports = {
 	addTagsByPhotoId,
 	getPhotoFromDb,
 	searchByTag,
+	getSearchHistory,
 };

@@ -13,4 +13,4 @@ const axiosInstance = axios.create({
 	},
 });
 
-module.exports = axiosInstance;
+module.exports = { axiosInstance };

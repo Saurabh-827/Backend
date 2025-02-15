@@ -1,22 +1,18 @@
-"use strict";
-
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
-		await queryInterface.createTable("searchHistories", {
+		await queryInterface.createTable("watchlists", {
 			id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-			query: { type: Sequelize.STRING, allowNull: false },
-			userId: {
+			movieId: {
 				type: Sequelize.INTEGER,
-				references: { model: "users", key: "id" },
+				references: { model: "movies", key: "id" },
 				onDelete: "CASCADE",
 			},
-			timestamp: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
+			addedAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
 			createdAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
 			updatedAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
 		});
 	},
 	down: async (queryInterface) => {
-		await queryInterface.dropTable("searchHistories");
+		await queryInterface.dropTable("watchlists");
 	},
 };

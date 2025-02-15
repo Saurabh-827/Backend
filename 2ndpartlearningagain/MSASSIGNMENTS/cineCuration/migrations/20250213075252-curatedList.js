@@ -1,17 +1,15 @@
-"use strict";
-
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
-		await queryInterface.createTable("users", {
+		await queryInterface.createTable("curatedLists", {
 			id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-			username: { type: Sequelize.STRING, allowNull: false },
-			email: { type: Sequelize.STRING, allowNull: false },
+			name: { type: Sequelize.STRING, allowNull: false },
+			slug: { type: Sequelize.STRING, allowNull: false },
+			description: { type: Sequelize.STRING },
 			createdAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
 			updatedAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
 		});
 	},
 	down: async (queryInterface) => {
-		await queryInterface.dropTable("users");
+		await queryInterface.dropTable("curatedLists");
 	},
 };

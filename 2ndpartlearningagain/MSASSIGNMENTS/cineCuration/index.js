@@ -8,7 +8,7 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cors());
 
-app.get("/api/search/movie", searchMovie);
+app.get("/api/movies/search", searchMovie);
 
 sequelize
 	.authenticate()

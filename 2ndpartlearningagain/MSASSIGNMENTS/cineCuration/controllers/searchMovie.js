@@ -63,4 +63,4 @@ const getActors = async (movieId) => {
 		return [];
 	}
 };
-module.exports = { searchMovie };
+module.exports = { searchMovie, getActors };

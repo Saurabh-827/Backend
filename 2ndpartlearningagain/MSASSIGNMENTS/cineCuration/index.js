@@ -3,6 +3,8 @@ const cors = require("cors");
 const { sequelize } = require("./models/index.js");
 const { searchMovie } = require("./controllers/searchMovie.js");
 const { createCuratedList } = require("./controllers/createCuratedList.js");
+const { updateCuratedList } = require("./controllers/updateCuratedList.js");
+const { createWatchlist } = require("./controllers/createWatchlist.js");
 
 const app = express();
 const PORT = 3000;
@@ -11,6 +13,8 @@ app.use(cors());
 
 app.get("/api/movies/search", searchMovie);
 app.post("/api/curated-lists", createCuratedList);
+app.put("/api/curated-lists/:curatedListId", updateCuratedList);
+app.post("/api/movies/watchlist", createWatchlist);
 
 sequelize
 	.authenticate()

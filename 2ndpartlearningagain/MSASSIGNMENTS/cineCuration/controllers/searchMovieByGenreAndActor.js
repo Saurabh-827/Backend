@@ -8,7 +8,7 @@ const searchMovieByGenreAndActor = async (req, res) => {
 		}
 		const whereClause = {};
 		if (genre) {
-			whereClause.genre = { [Op.iLike]: `%${genre}%` };
+			whereClause.genre = { [Op.iLike]: `%${genre}%` }; // iLike is specfic for PG only
 		}
 		if (actor) {
 			whereClause.actors = { [Op.iLike]: `%${actor}%` };

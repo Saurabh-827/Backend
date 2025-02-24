@@ -14,6 +14,7 @@ const {
 	searchMovieByGenreAndActor,
 } = require("./controllers/searchMovieByGenreAndActor.js");
 const { sortMovies } = require("./controllers/sortMovies.js");
+const { getTop5Movies } = require("./controllers/getTop5Movies.js");
 
 const app = express();
 const PORT = 3000;
@@ -29,6 +30,7 @@ app.post("/api/movies/curated-list", addMovieCuratedListItem);
 app.post("/api/movies/:movieId/reviews", createReview);
 app.get("/api/movies/searchByGenreAndActor", searchMovieByGenreAndActor);
 app.get("/api/movies/sort", sortMovies);
+app.get("/api/movies/top5", getTop5Movies);
 
 sequelize
 	.authenticate()

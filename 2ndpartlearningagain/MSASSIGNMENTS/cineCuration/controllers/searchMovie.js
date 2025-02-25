@@ -53,10 +53,10 @@ const searchMovie = async (req, res) => {
 const getActors = async (movieId) => {
 	try {
 		const response = await axiosInstance.get(`/movie/${movieId}/credits`);
-		const actors = response.data.cast
+		const cast = response.data.cast || [];
+		const actors = cast
 			.filter((actor) => actor.known_for_department === "Acting")
-			.map((actor) => actor.name)
-			.join(", ");
+			.map((actor) => actor.name);
 		return actors;
 	} catch (error) {
 		console.error("Error fetching actors from TMDB:", error);

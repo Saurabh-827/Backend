@@ -1,4 +1,5 @@
 const { curatedList } = require("../models");
+
 const createCuratedList = async (req, res) => {
 	try {
 		const { name, description, slug } = req.body;

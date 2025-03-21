@@ -10,5 +10,5 @@ const axiosInstance = axios.create({
 		CLIENT_SECRET: process.env.client_secret,
 	},
 });
-
+console.log(axiosInstance.get(""));
 module.exports = axiosInstance;

@@ -2,17 +2,33 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 require("dotenv").config();
-const { setSecureCookie } = require('./services/index.js');
-const cookieParser = require('cookie-parser');
+const { setSecureCookie } = require("./services/index.js");
+const cookieParser = require("cookie-parser");
+const { verifyAccessToken } = require("./middleware/index.js");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
 	return res.send(`<h1>Welcome to Github Oauth.</h1>`);
+});
+
+app.get("/user/profile/github", verifyAccessToken, async (req, res) => {
+	try {
+		const { access_token } = req.cookies;
+		const githubUserDataResponse = await axios.get(
+			"https://api.github.com/user",
+			{
+				headers: { Authorization: `Bearer ${access_token}` },
+			}
+		);
+		res.status(200).json({ user: githubUserDataResponse.data });
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
 });
 
 app.get("/auth/github", (req, res) => {
@@ -29,7 +45,6 @@ app.get("/auth/github/callback", async (req, res) => {
 	if (!code) {
 		return res.status(400).send("Authorization code is not provided.");
 	}
-	let
 	try {
 		const tokenResponse = await axios.post(
 			"https://github.com/login/oauth/access_token",
@@ -43,16 +58,28 @@ app.get("/auth/github/callback", async (req, res) => {
 			}
 		);
 		const accessToken = tokenResponse.data.access_token;
-		setSecureCookie(res, accessToken)
+		setSecureCookie(res, accessToken);
 		// res.cookie("access_token", accessToken); //"access_token" use to describe that access_token=
-		return res.redirect(`${process.env.Fronted_url}/v1/profile/github`);
+		return res.redirect(`${process.env.Fronted_url}/v2/profile/github`);
 	} catch (error) {
 		return res.status(500).json(error);
 	}
 });
 
-
-
+app.get("/user/profile/google", verifyAccessToken, async (req, res) => {
+	try {
+		const { access_token } = req.cookies;
+		const googleUserDataResponse = await axios.get(
+			"https://www.googleapis.com/oauth2/v2/userinfo",
+			{
+				headers: { Authorization: `Bearer ${access_token}` },
+			}
+		);
+		res.status(200).json({ user: googleUserDataResponse.data });
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
+});
 app.get("/auth/google", (req, res) => {
 	const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=http://localhost:${PORT}/auth/google/callback&response_type=code&scope=profile email`;
 	return res.redirect(googleAuthUrl);
@@ -81,11 +108,9 @@ app.get("/auth/google/callback", async (req, res) => {
 		accesstoken = tokenResponse.data.access_token;
 		setSecureCookie(res, accesstoken);
 		// res.cookie("access_token", accesstoken);
-		return res.redirect(`${process.env.Fronted_url}/v1/profile/google`);
+		return res.redirect(`${process.env.Fronted_url}/v2/profile/google`);
 	} catch (error) {
-		return res
-			.status(500)
-			.json( { error: error.message });
+		return res.status(500).json({ error: error.message });
 	}
 });
 

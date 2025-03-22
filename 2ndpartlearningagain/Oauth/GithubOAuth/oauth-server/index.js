@@ -2,11 +2,14 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 require("dotenv").config();
+const { setSecureCookie } = require('./services/index.js');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
 	return res.send(`<h1>Welcome to Github Oauth.</h1>`);
@@ -40,7 +43,8 @@ app.get("/auth/github/callback", async (req, res) => {
 			}
 		);
 		const accessToken = tokenResponse.data.access_token;
-		res.cookie("access_token", accessToken); //"access_token" use to describe that access_token=
+		setSecureCookie(res, accessToken)
+		// res.cookie("access_token", accessToken); //"access_token" use to describe that access_token=
 		return res.redirect(`${process.env.Fronted_url}/v1/profile/github`);
 	} catch (error) {
 		return res.status(500).json(error);
@@ -75,8 +79,8 @@ app.get("/auth/google/callback", async (req, res) => {
 			}
 		);
 		accesstoken = tokenResponse.data.access_token;
-
-		res.cookie("access_token", accesstoken);
+		setSecureCookie(res, accesstoken);
+		// res.cookie("access_token", accesstoken);
 		return res.redirect(`${process.env.Fronted_url}/v1/profile/google`);
 	} catch (error) {
 		return res

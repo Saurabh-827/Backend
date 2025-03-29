@@ -5,8 +5,13 @@ const { v4: uuidv4 } = require("uuid");
 
 const uploadFile = async (req, res) => {
 	upload(req, res, async (err) => {
-		if (err) return res.status(400).json({ error: err.message });
 		if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+		if (err)
+			return res.status(400).json({
+				message: "Error at initial of file upload",
+				error: err.message,
+				err,
+			});
 
 		try {
 			// ✅ Upload to Cloudinary
